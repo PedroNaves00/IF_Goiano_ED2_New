@@ -149,132 +149,135 @@ public class ArvoreRN {
         x.direita = y;
         y.pai = x;
     }
-        public void remover(NoRN z) {
-            NoRN y = z;
-            NoRN x;
-            boolean corOriginalY = y.cor;
 
-            if (z.esquerda == sentinela) {
-                x = z.direita;
-                transplantar(z, z.direita);
-            } else if (z.direita == sentinela) {
-                x = z.esquerda;
-                transplantar(z, z.esquerda);
+    public void remover(int valor) {
+        NoRN z = buscarNo(valor);
+        if (z != sentinela) {
+            remover(z);
+        }
+    }
+
+    public void remover(NoRN z) {
+        NoRN y = z;
+        NoRN x;
+        boolean corOriginalY = y.cor;
+
+        if (z.esquerda == sentinela) {
+            x = z.direita;
+            transplantar(z, z.direita);
+        } else if (z.direita == sentinela) {
+            x = z.esquerda;
+            transplantar(z, z.esquerda);
+        } else {
+            y = obterMinimo(z.direita);
+            corOriginalY = y.cor;
+            x = y.direita;
+
+            if (y.pai == z) {
+                x.pai = y;
             } else {
-                y = obterMinimo(z.direita);
-                corOriginalY = y.cor;
-                x = y.direita;
-
-                if (y.pai == z) {
-                    x.pai = y;
-                } else {
-                    transplantar(y, y.direita);
-                    y.direita = z.direita;
-                    y.direita.pai = y;
-                }
-
-                transplantar(z, y);
-                y.esquerda = z.esquerda;
-                y.esquerda.pai = y;
-                y.cor = z.cor;
+                transplantar(y, y.direita);
+                y.direita = z.direita;
+                y.direita.pai = y;
             }
 
-            if (corOriginalY == PRETO) {
-                ajustarRemocao(x);
-            }
+            transplantar(z, y);
+            y.esquerda = z.esquerda;
+            y.esquerda.pai = y;
+            y.cor = z.cor;
         }
 
-        // Método para ajustar a árvore após a remoção
-        private void ajustarRemocao(NoRN x) {
-            while (x != raiz && x.cor == PRETO) {
-                if (x == x.pai.esquerda) {
-                    NoRN irmao = x.pai.direita;
+        if (corOriginalY == PRETO) {
+            ajustarRemocao(x);
+        }
+    }
 
-                    if (irmao.cor == VERMELHO) {
-                        irmao.cor = PRETO;
-                        x.pai.cor = VERMELHO;
-                        rotacaoEsquerda(x.pai);
+    // Método para ajustar a árvore após a remoção
+    private void ajustarRemocao(NoRN x) {
+        while (x != raiz && x.cor == PRETO) {
+            if (x == x.pai.esquerda) {
+                NoRN irmao = x.pai.direita;
+
+                if (irmao.cor == VERMELHO) {
+                    irmao.cor = PRETO;
+                    x.pai.cor = VERMELHO;
+                    rotacaoEsquerda(x.pai);
+                    irmao = x.pai.direita;
+                }
+
+                if (irmao.esquerda.cor == PRETO && irmao.direita.cor == PRETO) {
+                    irmao.cor = VERMELHO;
+                    x = x.pai;
+                } else {
+                    if (irmao.direita.cor == PRETO) {
+                        irmao.esquerda.cor = PRETO;
+                        irmao.cor = VERMELHO;
+                        rotacaoDireita(irmao);
                         irmao = x.pai.direita;
                     }
 
-                    if (irmao.esquerda.cor == PRETO && irmao.direita.cor == PRETO) {
-                        irmao.cor = VERMELHO;
-                        x = x.pai;
-                    } else {
-                        if (irmao.direita.cor == PRETO) {
-                            irmao.esquerda.cor = PRETO;
-                            irmao.cor = VERMELHO;
-                            rotacaoDireita(irmao);
-                            irmao = x.pai.direita;
-                        }
+                    irmao.cor = x.pai.cor;
+                    x.pai.cor = PRETO;
+                    irmao.direita.cor = PRETO;
+                    rotacaoEsquerda(x.pai);
+                    x = raiz;
+                }
+            } else {
+                NoRN irmao = x.pai.esquerda;
 
-                        irmao.cor = x.pai.cor;
-                        x.pai.cor = PRETO;
-                        irmao.direita.cor = PRETO;
-                        rotacaoEsquerda(x.pai);
-                        x = raiz;
-                    }
+                if (irmao.cor == VERMELHO) {
+                    irmao.cor = PRETO;
+                    x.pai.cor = VERMELHO;
+                    rotacaoDireita(x.pai);
+                    irmao = x.pai.esquerda;
+                }
+
+                if (irmao.direita.cor == PRETO && irmao.esquerda.cor == PRETO) {
+                    irmao.cor = VERMELHO;
+                    x = x.pai;
                 } else {
-                    NoRN irmao = x.pai.esquerda;
-
-                    if (irmao.cor == VERMELHO) {
-                        irmao.cor = PRETO;
-                        x.pai.cor = VERMELHO;
-                        rotacaoDireita(x.pai);
+                    if (irmao.esquerda.cor == PRETO) {
+                        irmao.direita.cor = PRETO;
+                        irmao.cor = VERMELHO;
+                        rotacaoEsquerda(irmao);
                         irmao = x.pai.esquerda;
                     }
 
-                    if (irmao.direita.cor == PRETO && irmao.esquerda.cor == PRETO) {
-                        irmao.cor = VERMELHO;
-                        x = x.pai;
-                    } else {
-                        if (irmao.esquerda.cor == PRETO) {
-                            irmao.direita.cor = PRETO;
-                            irmao.cor = VERMELHO;
-                            rotacaoEsquerda(irmao);
-                            irmao = x.pai.esquerda;
-                        }
-
-                        irmao.cor = x.pai.cor;
-                        x.pai.cor = PRETO;
-                        irmao.esquerda.cor = PRETO;
-                        rotacaoDireita(x.pai);
-                        x = raiz;
-                    }
+                    irmao.cor = x.pai.cor;
+                    x.pai.cor = PRETO;
+                    irmao.esquerda.cor = PRETO;
+                    rotacaoDireita(x.pai);
+                    x = raiz;
                 }
             }
-
-            x.cor = PRETO;
         }
 
-        // Método auxiliar para buscar um nó na árvore
-        private NoRN buscarNo(int valor) {
-            return buscarNo(raiz, valor);
-        }
+        x.cor = PRETO;
+    }
 
-        private NoRN buscarNo(NoRN no, int valor) {
-            while (no != sentinela && valor != no.valor) {
-                if (valor < no.valor) {
-                    no = no.esquerda;
-                } else {
-                    no = no.direita;
-                }
-            }
+    // Método auxiliar para buscar um nó na árvore
+    private NoRN buscarNo(int valor) {
+        return buscarNo(raiz, valor);
+    }
 
-            return no;
-        }
-
-        // Método auxiliar para obter o nó mínimo a partir de um nó dado
-        private NoRN obterMinimo(NoRN no) {
-            while (no.esquerda != sentinela) {
+    private NoRN buscarNo(NoRN no, int valor) {
+        while (no != sentinela && valor != no.valor) {
+            if (valor < no.valor) {
                 no = no.esquerda;
+            } else {
+                no = no.direita;
             }
-            return no;
         }
 
-    // Método de impressão
-    public void imprimir() {
-        imprimir(raiz);
+        return no;
+    }
+
+    // Método auxiliar para obter o nó mínimo a partir de um nó dado
+    private NoRN obterMinimo(NoRN no) {
+        while (no.esquerda != sentinela) {
+            no = no.esquerda;
+        }
+        return no;
     }
 
     public int contarOcorrencias(int valor) {
@@ -312,12 +315,25 @@ public class ArvoreRN {
         v.pai = u.pai;
     }
 
+    public void sortearEoperar(int qtd) {
+        Random random = new Random();
 
-    private void imprimir(NoRN no) {
-        if (no != sentinela) {
-            imprimir(no.esquerda);
-            System.out.print(no.valor + "(" + (no.cor == VERMELHO ? "Vermelho" : "Preto") + ") ");
-            imprimir(no.direita);
+        // Sorteio aleatório de 50.000 números
+        for (int i = 0; i < qtd; i++) {
+            int numeroSorteado = random.nextInt(19999) - 9999;
+
+            if (numeroSorteado % 3 == 0) {
+                inserir(numeroSorteado);
+                System.out.println(numeroSorteado + " inserido na árvore.");
+            } else if (numeroSorteado % 5 == 0) {
+                remover(numeroSorteado);
+                System.out.println(numeroSorteado + " removido da árvore.");
+            } else {
+                int ocorrencias = contarOcorrencias(numeroSorteado);
+                System.out.println(numeroSorteado + " aparece na árvore " + ocorrencias + " vezes.");
+            }
         }
+
     }
+
 }

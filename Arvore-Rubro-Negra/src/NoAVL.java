@@ -1,8 +1,8 @@
-public class No {
+public class NoAVL {
     int valor, altura;
-    No esquerda, direita;
+    NoAVL esquerda, direita;
 
-    No(int valor) {
+    NoAVL(int valor) {
         this.valor = valor;
         this.altura = 1;
     }
