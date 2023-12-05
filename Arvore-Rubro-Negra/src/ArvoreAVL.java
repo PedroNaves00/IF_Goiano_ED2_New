@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
-
+import java.util.Random;
 public class ArvoreAVL {
     No raiz;
 
@@ -103,6 +103,40 @@ public class ArvoreAVL {
         imprimir(raiz);
     }
 
+    int contarOcorrencias(No no, int valor) {
+        if (no == null)
+            return 0;
+
+        if (valor < no.valor)
+            return contarOcorrencias(no.esquerda, valor);
+        else if (valor > no.valor)
+            return contarOcorrencias(no.direita, valor);
+        else
+            return 1 + contarOcorrencias(no.esquerda, valor) + contarOcorrencias(no.direita, valor);
+    }
+
+    // Método para sortear números e aplicar operações na árvore
+    void sortearEOperar(int quantidade) {
+        Random random = new Random();
+
+        for (int i = 0; i < quantidade; i++) {
+            int numeroSorteado = random.nextInt(19999) - 9999;
+
+            if (numeroSorteado % 3 == 0) {
+                System.out.println("Número sorteado (" + numeroSorteado + ") é múltiplo de 3. Inserindo na árvore.");
+                inserir(numeroSorteado);
+            } else if (numeroSorteado % 5 == 0) {
+                System.out.println("Número sorteado (" + numeroSorteado + ") é múltiplo de 5. Removendo da árvore.");
+                // Supondo que você já tenha implementado o método de remoção na sua classe
+                // Se não, você precisará implementá-lo
+                // remover(numeroSorteado);
+            } else {
+                System.out.println("Número sorteado (" + numeroSorteado + ") não é múltiplo de 3 ou 5. Contando ocorrências na árvore.");
+                int ocorrencias = contarOcorrencias(raiz, numeroSorteado);
+                System.out.println("Número " + numeroSorteado + " aparece na árvore " + ocorrencias + " vezes.");
+            }
+        }
+    }
     public static void main(String[] args) {
         ArvoreAVL arvore = new ArvoreAVL();
 
@@ -115,11 +149,21 @@ public class ArvoreAVL {
             if (linha != null) {
                 String[] numerosStr = linha.replaceAll("\\[|\\]", "").split(",\\s*");
 
+                // Início da contagem de tempo de execução (Árvore AVL)
+                long inicioExecucaoArvore = System.currentTimeMillis();
+
                 // Converter e inserir cada número na árvore
                 Arrays.stream(numerosStr)
                         .map(String::trim)
                         .mapToInt(Integer::parseInt)
                         .forEach(arvore::inserir);
+
+                // Sortear 50.000 números e operar na árvore
+                arvore.sortearEOperar(50000);
+
+                long fimExecucaoArvore = System.currentTimeMillis();
+
+                System.out.println("\nTempo total para execução: " + (fimExecucaoArvore - inicioExecucaoArvore) + " milissegundos");
 
             }
             // Fechar o BufferedReader
@@ -128,20 +172,6 @@ public class ArvoreAVL {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Realizar operações da árvore AVL
-        if (arvore != null) {
-
-            System.out.println("Imprimindo os números pela arvoreAVL:");
-
-            // Início da contagem de tempo de impressão (Árvore AVL)
-            long inicioImpressaoArvore = System.currentTimeMillis();
-
-            arvore.imprimir();
-
-            long fimImpressaoArvore = System.currentTimeMillis();
-
-            System.out.println("\nTempo total para impressão: " + (fimImpressaoArvore - inicioImpressaoArvore) + " milissegundos");
-        }
     }
 }
+

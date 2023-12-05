@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+
 class QuickSort {
     public static void quickSort(int[] array, int baixo, int alto) {
         if (baixo < alto) {
@@ -33,5 +38,49 @@ class QuickSort {
             System.out.print(valor + " ");
         }
         System.out.println();
+    }
+
+    public static void main(String[] args) {
+        int[] numerosForQuicksort = null;
+
+        try {
+            // Leitura do arquivo
+            BufferedReader br = new BufferedReader(new FileReader("/Users/pedronaves/Desktop/IF/4 Período /ED2/dados100_mil.txt"));
+            String linha = br.readLine();
+
+            // Remover colchetes e dividir a linha em números
+            if (linha != null) {
+                String[] numerosStr = linha.replaceAll("\\[|\\]", "").split(",\\s*");
+
+                // Converter e armazenar cada número para o QuickSort
+                numerosForQuicksort = Arrays.stream(numerosStr)
+                        .map(String::trim)
+                        .mapToInt(Integer::parseInt)
+                        .toArray();
+
+                // Aplicar o algoritmo QuickSort
+                QuickSort.quickSort(numerosForQuicksort, 0, numerosForQuicksort.length - 1);
+            }
+            // Fechar o BufferedReader
+            br.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Realizar operações do QuickSort
+        if (numerosForQuicksort != null) {
+
+            System.out.println("Imprimindo os números pelo quicksort:");
+
+            long inicioOrdenacao = System.currentTimeMillis();
+
+            QuickSort.imprimirArray(numerosForQuicksort);
+
+            long fimOrdenacao = System.currentTimeMillis();
+            // Imprimir o tempo de ordenação (QuickSort)
+            System.out.println("\nTempo total para impressão: " + (fimOrdenacao - inicioOrdenacao) + " milissegundos");
+
+        }
     }
 }

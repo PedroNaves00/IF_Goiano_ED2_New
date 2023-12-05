@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Arvore-AVL/Arvore-AVL.iml" filepath="$PROJECT_DIR$/Arvore-AVL/Arvore-AVL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Arvore-Rubro-Negra/Arvore-Rubro-Negra.iml" filepath="$PROJECT_DIR$/Arvore-Rubro-Negra/Arvore-Rubro-Negra.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IF_Goiano_ED2_New.iml" filepath="$PROJECT_DIR$/IF_Goiano_ED2_New.iml" />
+    </modules>
+  </component>
+</project>
